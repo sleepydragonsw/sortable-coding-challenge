@@ -20,13 +20,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import datetime
-import unittest
+import unittest.mock
 
 from ProductListingMatcher import ArgumentParser
 from ProductListingMatcher import Product
 
 
 class Test_ArgumentParser(unittest.TestCase):
+
+    def test_InvalidArgument(self):
+        self.assert_exception_raised(
+            args=["--invalid-argument"],
+            expected_message="unrecognized arguments: --invalid-argument",
+            expected_exit_code=2,
+        )
+
+    def test_help_short(self):
+        self.assert_exception_raised(
+            args=["-h"],
+            expected_message=None,
+            expected_exit_code=0,
+        )
+
+    def test_help_long(self):
+        self.assert_exception_raised(
+            args=["--help"],
+            expected_message=None,
+            expected_exit_code=0,
+        )
 
     def test_NoArgumentsSpecified(self):
         x = ArgumentParser()
@@ -46,6 +67,20 @@ class Test_ArgumentParser(unittest.TestCase):
         self.assertEquals(result.products_path, "products.txt")
         self.assertEquals(result.listings_path, "test_listings.txt")
 
+    def test_ListingsFileSpecified_NoFilenameSpecified_short(self):
+        self.assert_exception_raised(
+            args=["-l"],
+            expected_message="argument -l/--listings-file: expected one argument",
+            expected_exit_code=2,
+        )
+
+    def test_ListingsFileSpecified_NoFilenameSpecified_long(self):
+        self.assert_exception_raised(
+            args=["--listings-file"],
+            expected_message="argument -l/--listings-file: expected one argument",
+            expected_exit_code=2,
+        )
+
     def test_ProductsFileSpecified_short(self):
         x = ArgumentParser()
         result = x.parse_args(args=["-p", "test_products.txt"])
@@ -57,6 +92,29 @@ class Test_ArgumentParser(unittest.TestCase):
         result = x.parse_args(args=["-p", "test_products.txt"])
         self.assertEquals(result.products_path, "test_products.txt")
         self.assertEquals(result.listings_path, "listings.txt")
+
+    def test_ProductsFileSpecified_NoFilenameSpecified_short(self):
+        self.assert_exception_raised(
+            args=["-p"],
+            expected_message="argument -p/--products-file: expected one argument",
+            expected_exit_code=2,
+        )
+
+    def test_ProductsFileSpecified_NoFilenameSpecified_long(self):
+        self.assert_exception_raised(
+            args=["--products-file"],
+            expected_message="argument -p/--products-file: expected one argument",
+            expected_exit_code=2,
+        )
+
+    def assert_exception_raised(self, args, expected_message, expected_exit_code):
+        x = ArgumentParser()
+        x._print_message = unittest.mock.Mock() # silence messages
+        with self.assertRaises(x.Error) as cm:
+            x.parse_args(args=args)
+        actual_message = "{}".format(cm.exception)
+        self.assertEquals(actual_message, "{}".format(expected_message))
+        self.assertEquals(cm.exception.exit_code, expected_exit_code)
 
 
 class Test_Product(unittest.TestCase):

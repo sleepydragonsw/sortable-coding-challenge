@@ -23,7 +23,6 @@ import argparse
 import logging
 import os
 import sys
-from logging import StreamHandler
 
 
 def main():
@@ -113,7 +112,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 self.parser.error("file not found: {}".format(listings_path))
 
             logger = logging.Logger(name=__name__)
-            handler = StreamHandler(sys.stdout)
+            handler = logging.StreamHandler(sys.stdout)
             logger.addHandler(handler)
 
             return ProductListingMatcher(products_path, listings_path, logger)

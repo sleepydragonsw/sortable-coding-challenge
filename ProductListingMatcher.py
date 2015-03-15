@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
 import logging
-import os
 import sys
 
 
@@ -87,7 +86,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
     def parse_args(self, args=None, namespace=None):
         namespace = self.Namespace(self)
-        super().parse_args(namespace=namespace)
+        super().parse_args(args=args, namespace=namespace)
         app = namespace.create_application()
         return app
 
@@ -104,12 +103,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         def create_application(self):
             products_path = self.products_file
-            if not os.path.exists(products_path):
-                self.parser.error("file not found: {}".format(products_path))
-
             listings_path = self.listings_file
-            if not os.path.exists(listings_path):
-                self.parser.error("file not found: {}".format(listings_path))
 
             logger = logging.Logger(name=__name__)
             handler = logging.StreamHandler(sys.stdout)

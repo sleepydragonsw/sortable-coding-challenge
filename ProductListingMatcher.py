@@ -118,6 +118,51 @@ class ArgumentParser(argparse.ArgumentParser):
             self.exit_code = exit_code
 
 
+class Product:
+
+    def __init__(self, name, manufacturer, model, family, announced_date):
+        self.name = name
+        self.manufacturer = manufacturer
+        self.model = model
+        self.family = family
+        self.announced_date = announced_date
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    def __repr__(self):
+        return (
+            "Product("
+            "name={0.name!r}, "
+            "manufacturer={0.manufacturer!r}, "
+            "model={0.model!r}, "
+            "family={0.family!r}, "
+            "announced_date={0.announced_date!r}"
+            ")"
+        ).format(self)
+
+    def __eq__(self, other):
+        try:
+            other_name = other.name
+            other_manufacturer = other.manufacturer
+            other_model = other.model
+            other_family = other.family
+            other_announced_date = other.announced_date
+        except AttributeError:
+            return False
+        else:
+            return (
+                other_name == self.name and
+                other_manufacturer == self.manufacturer and
+                other_model == self.model and
+                other_family == self.family and
+                other_announced_date == self.announced_date
+            )
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
 if __name__ == "__main__":
     try:
         exit_code = main()

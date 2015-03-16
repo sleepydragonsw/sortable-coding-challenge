@@ -163,6 +163,47 @@ class Product:
         return not self.__eq__(other)
 
 
+class Listing:
+
+    def __init__(self, title, manufacturer, currency, price):
+        self.title = title
+        self.manufacturer = manufacturer
+        self.currency = currency
+        self.price = price
+
+    def __str__(self):
+        return "{}".format(self.title)
+
+    def __repr__(self):
+        return (
+            "Listing("
+            "title={0.title!r}, "
+            "manufacturer={0.manufacturer!r}, "
+            "currency={0.currency!r}, "
+            "price={0.price!r}"
+            ")"
+        ).format(self)
+
+    def __eq__(self, other):
+        try:
+            other_title = other.title
+            other_manufacturer = other.manufacturer
+            other_currency = other.currency
+            other_price = other.price
+        except AttributeError:
+            return False
+        else:
+            return (
+                other_title == self.title and
+                other_manufacturer == self.manufacturer and
+                other_currency == self.currency and
+                other_price == self.price
+            )
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
 if __name__ == "__main__":
     try:
         exit_code = main()
